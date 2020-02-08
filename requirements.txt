@@ -3,3 +3,4 @@ coverage
 numpy
 pandas
 pyyaml
+typelike

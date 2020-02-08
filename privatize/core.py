@@ -156,7 +156,7 @@ def privatize(private_variable=None, dtype=None, immutable=False):
     Returns
     -------
     property
-        Instance of built-in :ref:`~property` object
+        Instance of built-in :func:`~property` object
     """
 
     # Initialize _Privatize instance
