@@ -19,15 +19,19 @@ version = '.'.join([str(version_dict[key]) for key in ['major', 'minor', 'patch'
 # with open('requirements.txt', 'r') as f:
 #     requirements = f.read().splitlines()
 
+# Read in README.md
+with open('README.md', 'r') as f:
+    long_description = f.read()
+
 # Setup
 setup(
     name='privatize',
     version=version,
     author='C. Lockhart',
     author_email='chris@lockhartlab.org',
-    description='privatize',
-    long_description='privatize',
-    long_description_content_type='text/x-rst',
+    description='a package for turning class variables into parameters',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url="https://www.lockhartlab.org",
     packages=[
         'privatize',
