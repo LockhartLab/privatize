@@ -36,7 +36,9 @@ setup(
     packages=[
         'privatize',
     ],
-    install_requires=None,
+    install_requires=[
+        'typelike',
+    ],
     include_package_data=True,
     zip_safe=True
 )
