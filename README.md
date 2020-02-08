@@ -3,9 +3,11 @@ privatize
 =========
 a package for turning class variables into parameters
 
-<nobr><img src="https://img.shields.io/pypi/v/privatize" alt="version"/></nobr>
-<nobr><img src="https://img.shields.io/travis/com/lockhartlab/privatize/master"  alt="build-status-master"/></nobr>
-<nobr><img src="https://img.shields.io/codecov/c/github/lockhartlab/privatize/master" alt="coverage-master"/></nobr>
+<span style="white-space: nowrap;">
+  <img src="https://img.shields.io/pypi/v/privatize" alt="version"/>
+  <img src="https://img.shields.io/travis/com/lockhartlab/privatize/master"  alt="build-status-master"/>
+  <img src="https://img.shields.io/codecov/c/github/lockhartlab/privatize/master" alt="coverage-master"/>
+</span>
 
 <hr>
 
