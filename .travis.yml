@@ -1,0 +1,26 @@
+
+language: python
+python: 3.7
+
+# run all tests
+script:
+  - echo 0
+#  - cp privatize/tests/test.py .
+#  - python -m coverage run test.py
+#  - rm test.py
+
+# after a successful test, upload to codecov.io
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+# deploy to pypi
+deploy:
+  - provider: pypi
+    user: "__token__"
+    password:
+      secure: HRLWYFzJFV7RUOtgeztH+xo33OMNnAQY7UXx5qb2t7k4+9dHGImZBqBoJcpvA95uzxsW/an0ZNXFlq5MQp++X3pb+vOZpPtqlVCG9k+cFTWZsoQ0iAscv4RWlj5QJs6w3E6hcmz7gC5ymi4gwTWENy91F6o1FkoIOwWPfoeA84tAs4jqCekb9VBtm9t1Na9ajnSG4CgKkStqOvDQgiMY81Z76b6LRZjwQq2xl4KVPnuXKKdtO1wAsWWd8P2VsQc7q80ojYTJ5XLbqCnA6mEWJi4M4s3YHZN3Z61smIyDiUWtqYCrk2ztPBXp44LgXgW5Bquc6+vw3T+dU+HFPCeU4gn6spL9ECcKEvfHJbFjDI4ShyXOZNBnXJYR/GpVJ3/k6R5LAslkiWaLvPMv/6J0q4HAkmtMJvt0by6lokJXjS9ywAzhMPIC/FevKK7aUFrU8HMhp43VMqb19aqBKwvE3lvd+0/s4opgUctlmyToumX8Op8KP6f2uSueW/MKgFPQqKZPPRqHQaU7u4JghjaTpd/F+feI4Zxr0RUqf+kLA6kdJmLh/qIf1JjxpdRM++tIE/pqmyMKR/l/ceJMwfNwNvPz0hnakcYYY8dZfXcOIph9Q9pFNHLPcA4g7PyES6i4TLQWkYnNJrTTCfOqHDqUjE7dVFAgW5bPknJ137rCTQ4=
+    twine_check: true
+    skip_cleanup: true
+    on:
+      tags: true
+

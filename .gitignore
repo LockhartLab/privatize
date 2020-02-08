@@ -1,0 +1,6 @@
+/.idea
+/_scripts/
+/__pycache__/
+/build/
+/dist/
+/privatize.egg-info/
