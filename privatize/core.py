@@ -4,7 +4,7 @@ written in Python3
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
-from typelike import Anything, typelike, Undefined
+from typelike import Anything, infer_type, Undefined
 from os import urandom
 from warnings import warn
 
@@ -35,7 +35,7 @@ class _Privatize:
         self.private_variable = private_variable
 
         # Set the data type
-        self.dtype = typelike(dtype)
+        self.dtype = infer_type(dtype, itemize=True)
 
         # Should the class only be initialized once?
         self.immutable = immutable
