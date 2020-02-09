@@ -129,7 +129,7 @@ class _Privatize:
 
         # If self.dtype is set, check explicitly that the new value matches that type
         if self.dtype is not None and not isinstance(value, self.dtype):
-            raise AttributeError('must be %s' % self.dtype)
+            raise AttributeError('must be {}'.format(self.dtype))
 
         # Set the new value
         setattr(parent, self.private_variable, value)
