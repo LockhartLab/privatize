@@ -12,18 +12,20 @@ from warnings import warn
 # noinspection PyMethodParameters,PyMethodMayBeStatic,PyProtectedMember
 class _Privatize:
     # Initialize instance of _Privatize
-    def __init__(self, private_variable=None, dtype=None, immutable=False):
+    def __init__(self, private_variable=None, dtype=None, immutable=False, udf=None):
         """
-        Initialize instance of _Privatize
+        Initialize instance of _Privatize.
 
         Parameters
         ----------
         private_variable : str
-            Name of private variable
+            Name of private variable.
         dtype : str or object
-            (Optional) Enforce that `private_variable` is of type `dtype`
+            (Optional) Enforce that `private_variable` is of type `dtype`.
         immutable : bool
-            Can you change the value of the private variable multiple times? (Default: False)
+            Can you change the value of the private variable multiple times? (Default: False).
+        udf : function or list of functions
+            (Optional) Additional functions that should be applied when setting values.
         """
 
         # Save the private variable name
@@ -39,6 +41,11 @@ class _Privatize:
 
         # Should the class only be initialized once?
         self.immutable = immutable
+
+        # User-defined functions to be applied when setting values
+        if udf is not None and not isinstance(udf, list):
+            udf = [udf]
+        self.udf = udf
 
         # Logical booleans for sanity
         self.is_first_run = True
@@ -131,13 +138,19 @@ class _Privatize:
         if self.dtype is not None and not isinstance(value, self.dtype):
             raise AttributeError('must be {}'.format(self.dtype))
 
+        # Check user-defined functions
+        if self.udf is not None:
+            for udf in self.udf:
+                if not udf(value):
+                    raise AttributeError('udf %s not satisfied' % udf)
+
         # Set the new value
         setattr(parent, self.private_variable, value)
         self.is_first_run = False
 
 
 # Wrapper function to create _Privatize instance
-def privatize(private_variable=None, dtype=None, immutable=False):
+def privatize(private_variable=None, dtype=None, immutable=False, udf=None):
     """
     Add a private variable to a parent class
 
@@ -152,6 +165,8 @@ def privatize(private_variable=None, dtype=None, immutable=False):
         If not None, the variable must be of this type
     immutable : bool
         Should the value be set only on class initialization?
+    udf : function or list of functions
+        (Optional) Other functions that should be applied when setting values.
 
     Returns
     -------
@@ -160,7 +175,7 @@ def privatize(private_variable=None, dtype=None, immutable=False):
     """
 
     # Initialize _Privatize instance
-    obj = _Privatize(private_variable=private_variable, dtype=dtype, immutable=immutable)
+    obj = _Privatize(private_variable=private_variable, dtype=dtype, immutable=immutable, udf=udf)
 
     # Return property
     return property(obj.get_value, obj.set_value)

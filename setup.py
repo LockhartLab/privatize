@@ -37,7 +37,7 @@ setup(
         'privatize',
     ],
     install_requires=[
-        'typelike>=0.0.21',
+        'typelike>=0.0.22',
     ],
     python_requires='>=3.7',
     include_package_data=True,
