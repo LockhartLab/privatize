@@ -3,6 +3,6 @@ from .core import *
 from .udf import *
 
 __all__ = [
-    'minimum_pandas_columns',
-    'privatize'
+    'privatize',
+    'required_dataframe_columns'
 ]

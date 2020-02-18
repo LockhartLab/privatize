@@ -9,16 +9,19 @@ from refunction import Refunction
 
 
 # Ensure that pandas DataFrame columns are not changed
-def minimum_pandas_columns(columns):
+def required_dataframe_columns(columns):
     """
+    Specify required columns in pandas DataFrames
 
     Parameters
     ----------
-    columns
+    columns : list of str
+        Column names to ensure are represented.
 
     Returns
     -------
-
+    bool
+        Whether or not the requirement columns are in the DataFrame
     """
 
     def _fix_pandas_columns(df, columns):
