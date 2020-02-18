@@ -24,7 +24,7 @@ def required_dataframe_columns(columns):
         Whether or not the requirement columns are in the DataFrame
     """
 
-    def _fix_pandas_columns(df, columns):
-        return np.array_equal(df.columns, columns)
-    return Refunction(_fix_pandas_columns, columns=columns)
+    def _required_dataframe_columns(df, columns):
+        return np.isin(columns, df.columns).all()
+    return Refunction(_required_dataframe_columns, columns=columns)
 
