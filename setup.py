@@ -37,7 +37,7 @@ setup(
         'privatize',
     ],
     install_requires=[
-        'refunction',
+        'refunction>=0.0.2',
         'typelike>=0.0.22',
     ],
     python_requires='>=3.7',
