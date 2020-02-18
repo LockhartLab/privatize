@@ -11,7 +11,7 @@ from refunction import Refunction
 # Ensure that pandas DataFrame columns are not changed
 def fix_pandas_columns(columns):
     """
-    
+
     Parameters
     ----------
     columns
