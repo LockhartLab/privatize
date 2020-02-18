@@ -3,4 +3,5 @@ coverage
 numpy
 pandas
 pyyaml
+refunction
 typelike
