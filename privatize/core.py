@@ -12,7 +12,7 @@ from warnings import warn
 # noinspection PyMethodParameters,PyMethodMayBeStatic,PyProtectedMember
 class _Privatize:
     # Initialize instance of _Privatize
-    def __init__(self, private_variable=None, dtype=None, immutable=False, udf=None):
+    def __init__(self, private_variable=None, dtype=None, immutable=False, cast_as=None, udf=None):
         """
         Initialize instance of _Privatize.
 
@@ -24,6 +24,8 @@ class _Privatize:
             (Optional) Enforce that `private_variable` is of type `dtype`.
         immutable : bool
             Can you change the value of the private variable multiple times? (Default: False).
+        cast_as : object
+            Cast new values as this object
         udf : function or list of functions
             (Optional) Additional functions that should be applied when setting values.
         """
@@ -41,6 +43,9 @@ class _Privatize:
 
         # Should the class only be initialized once?
         self.immutable = immutable
+
+        # Cast
+        self.cast_as = cast_as
 
         # User-defined functions to be applied when setting values
         if udf is not None and not isinstance(udf, list):
@@ -138,6 +143,10 @@ class _Privatize:
         if self.dtype is not None and not isinstance(value, self.dtype):
             raise AttributeError('must be {}'.format(self.dtype))
 
+        # Cast as?
+        if self.cast_as is not None:
+            value = self.cast_as(value)
+
         # Check user-defined functions
         if self.udf is not None:
             for udf in self.udf:
@@ -150,7 +159,7 @@ class _Privatize:
 
 
 # Wrapper function to create _Privatize instance
-def privatize(private_variable=None, dtype=None, immutable=False, udf=None):
+def privatize(private_variable=None, dtype=None, immutable=False, cast_as=None, udf=None):
     """
     Add a private variable to a parent class
 
@@ -175,7 +184,7 @@ def privatize(private_variable=None, dtype=None, immutable=False, udf=None):
     """
 
     # Initialize _Privatize instance
-    obj = _Privatize(private_variable=private_variable, dtype=dtype, immutable=immutable, udf=udf)
+    obj = _Privatize(private_variable=private_variable, dtype=dtype, immutable=immutable, cast_as=cast_as, udf=udf)
 
     # Return property
     return property(obj.get_value, obj.set_value)
