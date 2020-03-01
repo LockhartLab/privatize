@@ -99,23 +99,6 @@ class _Privatize:
 
     # Get the stored value
     def get_value(self, parent):
-        """
-        """
-
-        """
-        Get value of private variable from parent
-
-        Parameters
-        ----------
-        parent : object
-            Parent object
-
-        Returns
-        -------
-        Anything
-            Value of private variable in parent
-        """
-
         # If the private variable has never been set, we have a problem
         if self.is_first_run:
             raise ReferenceError('variable should be set before retrieved')
