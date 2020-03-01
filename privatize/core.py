@@ -100,6 +100,9 @@ class _Privatize:
     # Get the stored value
     def get_value(self, parent):
         """
+        """
+
+        """
         Get value of private variable from parent
 
         Parameters
