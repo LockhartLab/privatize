@@ -38,7 +38,7 @@ setup(
     ],
     install_requires=[
         'refunction>=0.0.2',
-        'typelike>=0.0.22',
+        'typelike>=0.0.25',
     ],
     python_requires='>=3.7',
     include_package_data=True,

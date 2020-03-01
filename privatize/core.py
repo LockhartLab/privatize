@@ -55,6 +55,9 @@ class _Privatize:
         # Logical booleans for sanity
         self.is_first_run = True
 
+        # Description
+        self.description = 'Test'
+
     # Does the private variable exist?
     def _does_private_variable_exist(self, parent):
         """
@@ -100,18 +103,8 @@ class _Privatize:
     # Get the stored value
     def get_value(self, parent):
         """
-        Get value of private variable from parent
-
-        Parameters
-        ----------
-        parent : object
-            Parent object
-
-        Returns
-        -------
-        Anything
-            Value of private variable in parent
-        """
+        {0}
+        """.format(self.description)
 
         # If the private variable has never been set, we have a problem
         if self.is_first_run:
@@ -140,11 +133,13 @@ class _Privatize:
             raise AttributeError('can only be set at class initialization')
 
         # If self.dtype is set, check explicitly that the new value matches that type
+        # noinspection PyTypeChecker
         if self.dtype is not None and not isinstance(value, self.dtype):
             raise AttributeError('must be {}'.format(self.dtype))
 
         # Cast as?
         if self.cast_as is not None:
+            # noinspection PyCallingNonCallable
             value = self.cast_as(value)
 
         # Check user-defined functions
