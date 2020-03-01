@@ -55,9 +55,6 @@ class _Privatize:
         # Logical booleans for sanity
         self.is_first_run = True
 
-        # Description
-        self.description = 'Test'
-
     # Does the private variable exist?
     def _does_private_variable_exist(self, parent):
         """
@@ -103,8 +100,18 @@ class _Privatize:
     # Get the stored value
     def get_value(self, parent):
         """
-        {0}
-        """.format(self.description)
+        Get value of private variable from parent
+
+        Parameters
+        ----------
+        parent : object
+            Parent object
+
+        Returns
+        -------
+        Anything
+            Value of private variable in parent
+        """
 
         # If the private variable has never been set, we have a problem
         if self.is_first_run:
