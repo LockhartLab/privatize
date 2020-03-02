@@ -4,7 +4,7 @@ written in Python3
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
-from typelike import Anything, infer_type, Undefined
+from typelike import Anything, infer_type, NoneType, Undefined
 from os import urandom
 from warnings import warn
 
@@ -127,7 +127,7 @@ class _Privatize:
 
         # If self.dtype is set, check explicitly that the new value matches that type
         # noinspection PyTypeChecker
-        if self.dtype is not None and not isinstance(value, self.dtype):
+        if not isinstance(self.dtype, NoneType) and not isinstance(value, self.dtype):
             raise AttributeError('must be {}'.format(self.dtype))
 
         # Cast as?

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>privatize.core &#8212; privatize 0.0.16 documentation</title>
+    <title>privatize.core &#8212; privatize 0.0.29 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -21,7 +21,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">privatize 0.0.16 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">privatize 0.0.29 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -38,7 +38,7 @@
 <span class="sd">author: C. Lockhart &lt;chris@lockhartlab.org&gt;</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typelike</span> <span class="kn">import</span> <span class="n">Anything</span><span class="p">,</span> <span class="n">infer_type</span><span class="p">,</span> <span class="n">Undefined</span>
+<span class="kn">from</span> <span class="nn">typelike</span> <span class="kn">import</span> <span class="n">Anything</span><span class="p">,</span> <span class="n">infer_type</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">,</span> <span class="n">Undefined</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">urandom</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
@@ -46,7 +46,7 @@
 <span class="c1"># noinspection PyMethodParameters,PyMethodMayBeStatic,PyProtectedMember</span>
 <span class="k">class</span> <span class="nc">_Privatize</span><span class="p">:</span>
     <span class="c1"># Initialize instance of _Privatize</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">private_variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">immutable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">udf</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">private_variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">immutable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cast_as</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">udf</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize instance of _Privatize.</span>
 
@@ -58,6 +58,8 @@
 <span class="sd">            (Optional) Enforce that `private_variable` is of type `dtype`.</span>
 <span class="sd">        immutable : bool</span>
 <span class="sd">            Can you change the value of the private variable multiple times? (Default: False).</span>
+<span class="sd">        cast_as : object</span>
+<span class="sd">            Cast new values as this object</span>
 <span class="sd">        udf : function or list of functions</span>
 <span class="sd">            (Optional) Additional functions that should be applied when setting values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -75,6 +77,9 @@
 
         <span class="c1"># Should the class only be initialized once?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">immutable</span> <span class="o">=</span> <span class="n">immutable</span>
+
+        <span class="c1"># Cast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cast_as</span> <span class="o">=</span> <span class="n">cast_as</span>
 
         <span class="c1"># User-defined functions to be applied when setting values</span>
         <span class="k">if</span> <span class="n">udf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">udf</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -128,20 +133,6 @@
 
     <span class="c1"># Get the stored value</span>
     <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get value of private variable from parent</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parent : object</span>
-<span class="sd">            Parent object</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Anything</span>
-<span class="sd">            Value of private variable in parent</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="c1"># If the private variable has never been set, we have a problem</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_first_run</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ReferenceError</span><span class="p">(</span><span class="s1">&#39;variable should be set before retrieved&#39;</span><span class="p">)</span>
@@ -169,8 +160,14 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;can only be set at class initialization&#39;</span><span class="p">)</span>
 
         <span class="c1"># If self.dtype is set, check explicitly that the new value matches that type</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
+        <span class="c1"># noinspection PyTypeChecker</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;must be </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+
+        <span class="c1"># Cast as?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cast_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># noinspection PyCallingNonCallable</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cast_as</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
         <span class="c1"># Check user-defined functions</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">udf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -184,7 +181,7 @@
 
 
 <span class="c1"># Wrapper function to create _Privatize instance</span>
-<div class="viewcode-block" id="privatize"><a class="viewcode-back" href="../../api/generated/privatize.core.privatize.html#privatize.core.privatize">[docs]</a><span class="k">def</span> <span class="nf">privatize</span><span class="p">(</span><span class="n">private_variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">immutable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">udf</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="privatize"><a class="viewcode-back" href="../../api/generated/privatize.core.privatize.html#privatize.core.privatize">[docs]</a><span class="k">def</span> <span class="nf">privatize</span><span class="p">(</span><span class="n">private_variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">immutable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cast_as</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">udf</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add a private variable to a parent class</span>
 
@@ -209,7 +206,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Initialize _Privatize instance</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">_Privatize</span><span class="p">(</span><span class="n">private_variable</span><span class="o">=</span><span class="n">private_variable</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">immutable</span><span class="o">=</span><span class="n">immutable</span><span class="p">,</span> <span class="n">udf</span><span class="o">=</span><span class="n">udf</span><span class="p">)</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">_Privatize</span><span class="p">(</span><span class="n">private_variable</span><span class="o">=</span><span class="n">private_variable</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">immutable</span><span class="o">=</span><span class="n">immutable</span><span class="p">,</span> <span class="n">cast_as</span><span class="o">=</span><span class="n">cast_as</span><span class="p">,</span> <span class="n">udf</span><span class="o">=</span><span class="n">udf</span><span class="p">)</span>
 
     <span class="c1"># Return property</span>
     <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">get_value</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">set_value</span><span class="p">)</span></div>
@@ -240,7 +237,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">privatize 0.0.16 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">privatize 0.0.29 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
